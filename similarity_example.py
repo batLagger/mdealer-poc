@@ -3,12 +3,10 @@
 import argparse
 import math
 from pathlib import Path
-
 import matplotlib
+import torch
 
 matplotlib.use("Agg")
-
-import torch
 
 from bridge_generator import print_hand, verify_generated_hands
 from hand_emb import hands_similarity_fuzzy, load_ltc_fuzzy_model
@@ -64,6 +62,7 @@ if __name__ == "__main__":
     if len(hands) == 0:
         parser.error("--dataset must contain at least one hand")
     model = load_ltc_fuzzy_model(str(args.model), device="cpu")
+    
     indices, scores = hands_similarity_fuzzy(
         query,
         hands,

@@ -1,7 +1,5 @@
 #bridge generator
 
-import random
-
 import torch
 import numpy as np
 import itertools
@@ -20,18 +18,8 @@ Clubs:   0  0  0  1  0  0  1  1  0  1  1  1  0
 ```
 """
 
-def generate_random_hand():
-    tensor = torch.zeros((4, 13), dtype=torch.int)
-    indices = random.sample([(c,s) for c in range(4) for s in range(13)], 13)
-    for c,s in indices:
-        tensor[c,s] = 1.0
-    return tensor
-
 def generate_random_hand2():
     deck = torch.zeros((4,13), dtype=torch.float)
-    #rnd_indx = torch.randperm(7)
-    #rnd_indx = torch.randperm(torch.randint(1,1000,(1,)))
-    #torch.manual_seed(torch.randint(1,1000,(1,)))
     rnd_indx = torch.randperm(52)
     chosen_base = torch.randint(3,33,(1,))
     chosen_cards = rnd_indx[chosen_base:chosen_base+13]
@@ -72,6 +60,7 @@ def verify_generated_hands(hands: torch.Tensor, expected_shape=(4, 13)) -> None:
     cards_per_hand = hands.sum(dim=(1, 2))
     if not torch.all(cards_per_hand == 13):
         raise ValueError("Each hand must contain exactly 13 cards")
+
 
 #-----------------------------------------------
 def closest_hand(candidate_hand: torch.Tensor, partner_hand: torch.Tensor, OVERLAP_INDX=3) -> torch.Tensor:
@@ -169,10 +158,6 @@ def balanced_factor(shp : int ,base)-> torch.Tensor:
     shapev = np.sum([((shp//10**i)%10-base)**4  for i in range(4)])
     return torch.tensor(shapev)
 
-#2. 
-def no6M(shp : int):
-    vec = 0 if shp%10>5 or shp%100//10>5 else 1.0
-    return vec 
 
 def nt_range(hnd, min=15, max=17):
     return 1.0 if (hcp(hnd)>=min and hcp(hnd)<=max) else 0

@@ -1,14 +1,10 @@
-# Single-hand fuzzy similarity demo
+# Single-hand similarity scripts
 
-These three standalone command-line examples call the existing functions without
-changing their definitions, model architecture, training, or scoring algorithms.
-The only library change removes an unused import of the nonexistent
-`build_supervised_1nt_dataloaders`, which previously prevented importing
-[hand_emb.py](./hand_emb.py).
+Running the commands below will create These three standalone command-line examples of creating a training set, training it, and running the model.
 
 ## Setup
 
-Use Python 3.10+ and run from this project directory:
+Python 3.10+ and run from this project directory:
 
 ```bash
 python3 -m venv .venv
@@ -19,26 +15,24 @@ python -m pip install -r requirements.txt
 The pipeline uses PyTorch, NumPy, Matplotlib, and pandas (imported by the existing
 embedding module). scikit-learn is only needed for the unrelated t-SNE plotting
 function; pytest is only needed for the existing pair-model tests.
-The examples default to CPU. Training can use `--device cuda` when supported by
+Examples default to CPU. Training can use `--device cuda` when supported by
 your PyTorch installation. Training and similarity use Matplotlib's headless
 `Agg` backend, so no graphical display or plot interaction is needed.
 
-## 1. Train a fuzzy model
+## 1. Train an Embedding similarity model
 
 ```bash
-python train_example.py --num-hands 5000 --epochs 5 --batch-size 256 \
+python train_example.py --num-hands 100000 --epochs 12 --batch-size 256 \
   --output-dir demo_output/models
 ```
 
 [train_example.py](./train_example.py) calls `train_ltc_fuzzy` with the original
 default architecture. The function generates its own random training hands,
-labels them with `calc_losers`, uses its existing 80/20 training/validation split,
-and prints per-epoch metrics. Its fixed checkpoint filename is preserved by
-running it inside the selected output directory. The working directory is
-restored afterward.
+labels them (`calc_losers`), using 80%-20% train/val split,
+and prints per-epoch metrics, running it inside the selected output directory. The working directory is restored afterward.
 
 Output: `demo_output/models/ltc_fuzzy_model.pth` (model state dictionary).
-No plots are displayed or saved. The unchanged trainer still calls `plt.show()`;
+The unchanged trainer still calls `plt.show()`;
 Matplotlib may print a harmless `FigureCanvasAgg is non-interactive` warning,
 then training continues and saves the checkpoint.
 The small CLI defaults demonstrate the pipeline; they are not an accuracy
@@ -107,10 +101,7 @@ catalog, not probabilities or absolute measures of bridge strength. Ties are
 possible; when every raw score is equal (including a one-hand catalog), the
 existing normalization returns zero for every hand.
 
-Use only trusted model/dataset files. The loader expects the original
-`HandLTCfuzzy` architecture, not `HandLTC`, `HandLTCfuzzy2`, or pair checkpoints.
-The older `hands_similarity0`, `hands_similarity`, and `hands_similarity_new`
-functions are not used because they belong to the separate `HandLTC` pipeline.
+Using base model/dataset, for the `HandLTCfuzzy` architecture (using all relevant aux headers but no Dropout)
 
 ## Pipeline summary
 
@@ -135,6 +126,6 @@ ten printed matches. Rankings and printed scores were checked against direct
 individually. Input errors, overwrite protection, void notation, and
 single-hand/empty/wrong-type catalogs were also checked.
 
-The generated demo checkpoint and catalog are already present after this
-verification. You can run similarity immediately; use different output paths
+The generated hands set and model are already present. 
+You can run similarity immediately; use different output paths
 to repeat training or dataset generation without triggering overwrite protection.
