@@ -1,10 +1,10 @@
-## Embedding Bridge hands project
+# Embedding Bridge hands project
 
-# Single-hand similarity scripts
+## Single-hand similarity scripts
 
 Running the commands below will create these three standalone command-line examples of creating a training set, training it, and running the model.
 
-## Setup
+### Setup
 
 Python 3.10+ and run from this project directory:
 
@@ -27,14 +27,14 @@ Pipeline has 3 main steps:
 - Training the model (creates labels, and saves the output model)
 - Run Similarity tests for query hands
 
-## 1. Create the searchable hands dataset
+### 1. Create the searchable hands dataset
 
 ```bash
 python create_dataset.py --num-hands 500000 \
   --output hands.pt
 ```
 
-[create_dataset.py](./create_dataset.py) calls
+[create_dataset.py] (./create_dataset.py) calls
 `generate_training_set`, checks it using `verify_generated_hands`, and saves a CPU
 float32 tensor of shape `[N, 4, 13]`. Suit rows are S.H.D.C;  
 Catalog creates hands for the training module. 
@@ -45,7 +45,7 @@ Model and dataset outputs live in separate directories. Choose a different outpu
 Relative paths are resolved from the directory where you run the command.
 
 
-## 2. Train an Embedding similarity model
+### 2. Train an Embedding similarity model
 
 ```bash
 python hands_embed_train.py --dataset hands_mid --epochs 19 --modelname model_test5
@@ -66,7 +66,7 @@ The small CLI defaults demonstrate the pipeline; they are not an accuracy guaran
 hardware or PyTorch versions is not guaranteed.
 Current network is pretty basic (more updates to come), it is still a work in progress. Not using BatchNorm or Dropout, nor patience check.
 
-## 3. Score a sample hand and print the matches
+### 3. Score a sample hand and print the matches
 
 ```bash 
  python hands_similarity.py --dataset hands_large \
@@ -129,7 +129,7 @@ sorted indices + scores -> terminal output with print_hand
 
 Each script supports `--help`. 
 
-## Verification
+### initial tests
 
 For the basic verification test, I ran commands with Python 3.12.3 and PyTorch 2.13.0:
 5,000 training hands for five epochs, a saved/reloaded 10,000-hand catalog, and
